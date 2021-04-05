@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">FancyCars</string>
+
+    <string name="sort_name">Sort by Name</string>
+    <string name="sort_avail">Sort by Availability</string>
+    <string name="sort_none">Sort by Relevance</string>
+    <string name="sort_tile">Sort by</string>
+
+    <string name="error_loading_cars">Error loading cars</string>
+    <string name="error_internet_connection">Check your internet connection or wait until service is reestablished</string>
+
+    <string name="warning_empty_cars">There are no cars at the time</string>
+
+    <string name="buy_now_label">Buy now!</string>
+</resources>
