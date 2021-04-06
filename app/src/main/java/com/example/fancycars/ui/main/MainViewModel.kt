@@ -17,6 +17,7 @@ class MainViewModel(
 ): ViewModel() {
 
     val state : MutableLiveData<State> = MutableLiveData()
+    val loading : MutableLiveData<Boolean> = MutableLiveData()
     private val sortType: MutableLiveData<Int?> = MutableLiveData()
     var carsPagedFeed: LiveData<PagedList<Car>>? =
         Transformations.switchMap(sortType) {
@@ -24,7 +25,7 @@ class MainViewModel(
                 .setBoundaryCallback(object : PagedList.BoundaryCallback<Car>() {
                     override fun onZeroItemsLoaded() {
                         super.onZeroItemsLoaded()
-                        fetchCars()
+//                        fetchCars()
                     }
                     override fun onItemAtEndLoaded(itemAtEnd: Car) {
                         super.onItemAtEndLoaded(itemAtEnd)
@@ -38,9 +39,11 @@ class MainViewModel(
         sortType.postValue(type)
     }
 
-    private fun fetchCars(paging: Boolean = false) {
+    fun fetchCars(paging: Boolean = false) {
+        loading.postValue(true)
         viewModelScope.launch(Dispatchers.IO) {
             val response = carRepository.fetchCars(paging)
+            loading.postValue(false)
             if(response is Result.Failure) {
                 state.postValue(State.Error(response.throwable))
             } else if(response is Result.Success && response.result) {

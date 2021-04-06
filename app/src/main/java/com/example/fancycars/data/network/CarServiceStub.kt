@@ -11,10 +11,12 @@ import retrofit2.Response
 class CarServiceStub {
 
     suspend fun getCars(startIndex: Int?): Response<List<Car>> {
+        Thread.sleep(4000)
         return Response.success(cars(startIndex))
     }
 
     suspend fun getAvailability(id: Int): Response<CarAvailability> {
+        Thread.sleep(400)
         return Response.success(CarAvailability(avail(id)))
     }
 
@@ -46,7 +48,6 @@ class CarServiceStub {
             for (i in start..end) {
                 cars.add(Car(i, names[i%5], picture[i%3], make[i%4], model[i%6], 2021-i))
             }
-            Log.d("CARS", "Returning ${cars.size}")
             return cars
         }
 

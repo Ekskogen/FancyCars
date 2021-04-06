@@ -26,18 +26,49 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        initUI()
+        initViews()
+        initObservers()
+        initLogic()
     }
 
-    private fun initUI() {
+    private fun initLogic() {
+        feedController.endReached = false
+        viewModel.fetchCars()
+    }
+
+    private fun initObservers() {
+        viewModel.initPagedListBy()
+        viewModel.carsPagedFeed?.observe(this) {
+            feedController.submitList(it)
+        }
+
+        viewModel.state.observe(this) {
+            when(it) {
+                is State.Done -> {
+                    binding.warningTV.visibility = View.INVISIBLE
+                    feedController.endReached = it.endOfList
+                }
+                is State.Error -> {
+                    binding.warningTV.visibility = View.VISIBLE
+                    if (it.e is NoInternetException) {
+                        binding.warningTV.text = getString(R.string.error_internet_connection)
+                    } else {
+                        binding.warningTV.text = getString(R.string.error_loading_cars)
+                    }
+                }
+            }
+        }
+
+        viewModel.loading.observe(this) {
+            binding.progressBar.visibility = if(it) View.VISIBLE else View.GONE
+        }
+    }
+
+    private fun initViews() {
         binding.carRecyclerView.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
             setHasFixedSize(true)
             adapter = feedController.adapter
-        }
-        viewModel.initPagedListBy()
-        viewModel.carsPagedFeed?.observe(this) {
-            feedController.submitList(it)
         }
 
         viewModel.state.observe(this) {
