@@ -8,7 +8,6 @@ import com.example.fancycars.data.network.Result
 import com.example.fancycars.data.repositories.CarRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 
 class MainViewModel(
@@ -19,7 +18,7 @@ class MainViewModel(
     val state : MutableLiveData<State> = MutableLiveData()
     val loading : MutableLiveData<Boolean> = MutableLiveData()
     private val sortType: MutableLiveData<Int?> = MutableLiveData()
-    var carsPagedFeed: LiveData<PagedList<Car>>? =
+    var carsPagedFeed: LiveData<PagedList<Car>> =
         Transformations.switchMap(sortType) {
             LivePagedListBuilder(carRepository.getCarSourceBy(it ?: NONE), pageListConfig)
                 .setBoundaryCallback(object : PagedList.BoundaryCallback<Car>() {
